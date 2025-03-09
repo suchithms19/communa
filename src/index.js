@@ -17,6 +17,18 @@ mongoose.connect(process.env.MONGODB_URI)
   })
   .catch((err) => console.error('MongoDB connection error:', err));
 
+  // Routes
+app.use('/v1/auth', require('./routes/auth'));
+
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(err.status || 500).json({
+    status: false,
+    errors: [{ message: err.message || 'Internal server error' }]
+  });
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
