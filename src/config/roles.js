@@ -18,7 +18,6 @@ const initializeRoles = async () => {
       const existingRole = await Role.findOne({ name: role.name });
       if (!existingRole) {
         await Role.create(role);
-        console.log(`Created role: ${role.name}`);
       }
     }
     console.log('Roles initialization completed');
