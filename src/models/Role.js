@@ -14,15 +14,7 @@ const roleSchema = new mongoose.Schema({
   scopes: [{
     type: String,
     required: true,
-  }],
-  created_at: {
-    type: Date,
-    default: Date.now,
-  },
-  updated_at: {
-    type: Date,
-    default: Date.now,
-  }
+  }]
 }, {
   timestamps: true,
   _id: false
