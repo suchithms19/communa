@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const { initializeRoles } = require('./config/roles');
 
 const app = express();
 
@@ -14,11 +15,14 @@ app.use(express.urlencoded({ extended: true }));
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => {
     console.log('Connected to MongoDB');
+    // Initialize roles after database connection
+    initializeRoles();
   })
   .catch((err) => console.error('MongoDB connection error:', err));
 
-  // Routes
+// Routes
 app.use('/v1/auth', require('./routes/auth'));
+app.use('/v1/community', require('./routes/community'));
 
 
 // Error handling middleware

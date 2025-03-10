@@ -12,7 +12,6 @@ const communitySchema = new mongoose.Schema({
   },
   slug: {
     type: String,
-    required: true,
     unique: true,
   },
   owner: {
@@ -36,7 +35,7 @@ const communitySchema = new mongoose.Schema({
 
 // Create slug from name before saving
 communitySchema.pre('save', function(next) {
-  if (this.isModified('name')) {
+  if (!this.slug || this.isModified('name')) {
     this.slug = this.name.toLowerCase().replace(/[^a-zA-Z0-9]/g, '-');
   }
   next();
