@@ -33,44 +33,16 @@ router.post('/', auth, validate(createRoleSchema), async (req, res) => {
       });
     }
 
-    // Default scopes based on role name
-    let scopes = [];
-    if (name === 'Community Admin') {
-      scopes = [
-        'community.member.add',
-        'community.member.remove',
-        'community.member.view',
-        'community.view',
-        'community.update',
-        'community.delete'
-      ];
-    } else if (name === 'Community Moderator') {
-      scopes = [
-        'community.member.view',
-        'community.member.add',
-        'community.member.remove',
-        'community.view'
-      ];
-    } else if (name === 'Community Member') {
-      scopes = [
-        'community.view',
-        'community.member.view'
-      ];
-    } else {
-      scopes = ['community.view'];
-    }
-
     // Create role
-    const role = new Role({ name, scopes });
+    const role = new Role({ name });
     await role.save();
 
-    res.status(201).json({
+    res.status(200).json({
       status: true,
       content: {
         data: {
           id: role._id,
           name: role.name,
-          scopes: role.scopes,
           created_at: role.created_at,
           updated_at: role.updated_at
         }
@@ -112,7 +84,6 @@ router.get('/', async (req, res) => {
         data: roles.map(role => ({
           id: role._id,
           name: role.name,
-          scopes: role.scopes,
           created_at: role.created_at,
           updated_at: role.updated_at
         }))

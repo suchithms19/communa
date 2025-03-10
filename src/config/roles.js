@@ -2,31 +2,13 @@ const Role = require('../models/Role');
 
 const defaultRoles = [
   {
-    name: 'Community Admin',
-    scopes: [
-      'community.member.add',
-      'community.member.remove',
-      'community.member.view',
-      'community.view',
-      'community.update',
-      'community.delete'
-    ]
+    name: 'Community Admin'
   },
   {
-    name: 'Community Moderator',
-    scopes: [
-      'community.member.view',
-      'community.member.add',
-      'community.member.remove',
-      'community.view',
-    ]
+    name: 'Community Moderator'
   },
   {
-    name: 'Community Member',
-    scopes: [
-      'community.view',
-      'community.member.view'
-    ]
+    name: 'Community Member'
   }
 ];
 

@@ -20,9 +20,13 @@ const memberSchema = new mongoose.Schema({
     type: String,
     ref: 'Role',
     required: true,
+  },
+  created_at: {
+    type: Date,
+    default: Date.now,
   }
 }, {
-  timestamps: { createdAt: true, updatedAt: false },
+  timestamps: false,
   _id: false
 });
 

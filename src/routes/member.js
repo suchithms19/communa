@@ -108,7 +108,7 @@ router.post('/', auth, validate(addMemberSchema), async (req, res) => {
     });
     await member.save();
 
-    res.status(201).json({
+    res.status(200).json({
       status: true,
       content: {
         data: {
@@ -154,7 +154,7 @@ router.delete('/:id', auth, async (req, res) => {
       .populate('role');
     
     if (!member) {
-      return res.status(404).json({
+      return res.status(200).json({
         status: false,
         errors: [{
           message: "Member not found.",
