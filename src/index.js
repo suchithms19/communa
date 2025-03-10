@@ -23,6 +23,7 @@ mongoose.connect(process.env.MONGODB_URI)
 // Routes
 app.use('/v1/auth', require('./routes/auth'));
 app.use('/v1/community', require('./routes/community'));
+app.use('/v1/member', require('./routes/member'));
 app.use('/v1/role', require('./routes/role'));
 
 // Error handling middleware
