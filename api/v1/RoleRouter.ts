@@ -1,7 +1,7 @@
 import express, { Router } from 'express';
-import RoleController from '../../controllers/v1/RoleController';
-import validate from '../../middlewares/v1/validate';
-import auth from '../../middlewares/v1/auth';
+import RoleController from '@controllers/v1/RoleController';
+import validate from '@middlewares/v1/validate';
+import auth from '@middlewares/v1/auth';
 import Joi from 'joi';
 
 const RoleRouter: Router = express.Router();

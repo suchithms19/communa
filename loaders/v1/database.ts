@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import Logger from '../../universe/v1/libraries/logger';
+import Logger from '@universe/v1/libraries/logger';
 
 class Database {
   static instance: PrismaClient;

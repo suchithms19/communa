@@ -1,9 +1,9 @@
 import express from 'express';
-import { initializeRoles } from "./loaders/v1/roles";
-import apiRoutes from './api/v1';
-import FrameworkLoader from './loaders/v1/framework';
-import Logger from './universe/v1/libraries/logger';
-import Env from './loaders/v1/Env';
+import { initializeRoles } from "@loaders/v1/roles";
+import apiRoutes from '@api/v1';
+import FrameworkLoader from '@loaders/v1/framework';
+import Logger from '@universe/v1/libraries/logger';
+import Env from '@loaders/v1/Env';
 
 const server = async(): Promise<express.Application> =>{
     const app = express();

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import prisma from '../../loaders/v1/prisma';
+import prisma from '@loaders/v1/prisma';
 
 // Function to generate slug from name
 const generateSlug = (name: string): string => {

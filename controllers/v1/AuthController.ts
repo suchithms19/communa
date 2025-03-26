@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import prisma from '../../loaders/v1/prisma';
-import Env from '../../loaders/v1/Env';
+import prisma from '@loaders/v1/prisma';
+import Env from '@loaders/v1/Env';
 
 interface User {
   id: number;

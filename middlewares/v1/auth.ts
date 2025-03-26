@@ -1,9 +1,9 @@
 import { Request } from 'express';
 import jwt from 'jsonwebtoken';
-import prisma from '../../loaders/v1/prisma';
+import prisma from '@loaders/v1/prisma';
 import { RequestHandler } from 'express';
-import Logger from '../../universe/v1/libraries/logger';
-import Env from '../../loaders/v1/Env';
+import Logger from '@universe/v1/libraries/logger';
+import Env from '@loaders/v1/Env';
 
 
 interface AuthenticatedRequest extends Request {

@@ -1,6 +1,6 @@
-import Env from "./loaders/v1/Env";
+import Env from "@loaders/v1/Env";
 import server from "./server";
-import Logger from "./universe/v1/libraries/logger";
+import Logger from "@universe/v1/libraries/logger";
 
 
 // IIFE with proper error handling

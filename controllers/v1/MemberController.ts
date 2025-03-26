@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import prisma from '../../loaders/v1/prisma';
+import prisma from '@loaders/v1/prisma';
 
 interface AuthenticatedRequest extends Request {
   user?: {

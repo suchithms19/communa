@@ -1,5 +1,5 @@
 import prisma from './prisma';
-import Logger from '../../universe/v1/libraries/logger';
+import Logger from '@universe/v1/libraries/logger';
 
 interface RoleType {
   name: string;

@@ -1,7 +1,7 @@
 import express, { Router } from 'express';
-import AuthController from '../../controllers/v1/AuthController';
-import validate from '../../middlewares/v1/validate';
-import auth from '../../middlewares/v1/auth';
+import AuthController from '@controllers/v1/AuthController';
+import validate from '@middlewares/v1/validate';
+import auth from '@middlewares/v1/auth';
 import Joi from 'joi';
 
 const AuthRouter: Router = express.Router();
