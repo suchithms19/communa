@@ -1,13 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import prisma from '@loaders/v1/prisma';
-
-interface AuthenticatedRequest extends Request {
-  user?: {
-    id: number;
-    name: string | null;
-    email: string;
-  };
-}
+import RoleService from '@services/v1/RoleService';
+import { AuthenticatedRequest } from '@interfaces/v1/common';
 
 class RoleController {
   static async createRole(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
@@ -23,9 +16,7 @@ class RoleController {
       const { name } = req.body;
 
       // Check if role already exists
-      const existingRole = await prisma.role.findFirst({
-        where: { name }
-      });
+      const existingRole = await RoleService.getByName(name);
 
       if (existingRole) {
         res.status(400).json({
@@ -40,11 +31,9 @@ class RoleController {
       }
 
       // Create a new role
-      const role = await prisma.role.create({
-        data: {
-          name,
-          permissions: [] // Default empty permissions
-        }
+      const role = await RoleService.create({
+        name,
+        permissions: [] // Default empty permissions
       });
 
       res.status(200).json({
@@ -67,26 +56,18 @@ class RoleController {
     try {
       const page = parseInt(req.query.page as string) || 1;
       const limit = 10;
-      const skip = (page - 1) * limit;
       
-      const [roles, total] = await Promise.all([
-        prisma.role.findMany({
-          orderBy: { createdAt: 'asc' },
-          skip,
-          take: limit
-        }),
-        prisma.role.count()
-      ]);
+      const result = await RoleService.getAll(page, limit);
 
       res.json({
         status: true,
         content: {
           meta: {
-            total,
-            pages: Math.ceil(total / limit),
+            total: result.total,
+            pages: result.pages,
             page
           },
-          data: roles.map(role => ({
+          data: result.roles.map((role: any) => ({
             id: role.id.toString(),
             name: role.name,
             created_at: role.createdAt,
@@ -100,4 +81,4 @@ class RoleController {
   }
 }
 
-export default RoleController; 
+export default RoleController;

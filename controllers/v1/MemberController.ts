@@ -1,13 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
-import prisma from '@loaders/v1/prisma';
-
-interface AuthenticatedRequest extends Request {
-  user?: {
-    id: number;
-    name: string | null;
-    email: string;
-  };
-}
+import MemberService from '@services/v1/MemberService';
+import CommunityService from '@services/v1/CommunityService';
+import UserService from '@services/v1/UserService';
+import RoleService from '@services/v1/RoleService';
+import { AuthenticatedRequest } from '@interfaces/v1/common';
 
 class MemberController {
   static async addMember(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
@@ -17,7 +13,7 @@ class MemberController {
       const userId = parseInt(req.body.user, 10);
       const roleId = parseInt(req.body.role, 10);
 
-      if (!req.user) {
+      if (!req.user || !req.user.id) {
         res.status(401).json({
           status: false,
           errors: [{ message: 'User not authenticated' }]
@@ -26,18 +22,7 @@ class MemberController {
       }
 
       // Check if community exists
-      const community = await prisma.community.findUnique({
-        where: { id: communityId },
-        include: {
-          members: {
-            where: {
-              userId: req.user.id,
-              role: 'Community Admin'
-            }
-          }
-        }
-      });
-
+      const community = await CommunityService.getSingle(communityId);
       if (!community) {
         res.status(400).json({
           status: false,
@@ -50,11 +35,21 @@ class MemberController {
         return;
       }
 
-      // Check if user exists
-      const user = await prisma.user.findUnique({
-        where: { id: userId }
-      });
+      // Check if the authenticated user is an admin of the community
+      const isAdmin = await MemberService.checkCommunityAdmin(req.user.id, communityId);
+      if (!isAdmin) {
+        res.status(403).json({
+          status: false,
+          errors: [{
+            message: 'You are not authorized to perform this action.',
+            code: 'NOT_ALLOWED_ACCESS'
+          }]
+        });
+        return;
+      }
 
+      // Check if user exists
+      const user = await UserService.getSingle(userId);
       if (!user) {
         res.status(400).json({
           status: false,
@@ -68,10 +63,7 @@ class MemberController {
       }
 
       // Check if role exists
-      const role = await prisma.role.findUnique({
-        where: { id: roleId }
-      });
-
+      const role = await RoleService.getSingle(roleId);
       if (!role) {
         res.status(400).json({
           status: false,
@@ -84,26 +76,8 @@ class MemberController {
         return;
       }
 
-      // Check if the authenticated user is an admin of the community
-      if (community.members.length === 0) {
-        res.status(403).json({
-          status: false,
-          errors: [{
-            message: 'You are not authorized to perform this action.',
-            code: 'NOT_ALLOWED_ACCESS'
-          }]
-        });
-        return;
-      }
-
       // Check if member already exists
-      const existingMember = await prisma.member.findFirst({
-        where: {
-          communityId,
-          userId
-        }
-      });
-
+      const existingMember = await MemberService.checkMemberExistence(userId, communityId);
       if (existingMember) {
         res.status(400).json({
           status: false,
@@ -116,12 +90,10 @@ class MemberController {
       }
 
       // Create new member with role name
-      const member = await prisma.member.create({
-        data: {
-          communityId,
-          userId,
-          role: role.name // Use role.name instead of roleId
-        }
+      const member = await MemberService.create({
+        communityId,
+        userId,
+        role: role.name
       });
 
       res.status(200).json({
@@ -145,7 +117,7 @@ class MemberController {
     try {
       const memberId = parseInt(req.params.id, 10);
 
-      if (!req.user) {
+      if (!req.user || !req.user.id) {
         res.status(401).json({
           status: false,
           errors: [{ message: 'User not authenticated' }]
@@ -154,21 +126,7 @@ class MemberController {
       }
 
       // Check if member exists
-      const member = await prisma.member.findUnique({
-        where: { id: memberId },
-        include: {
-          community: {
-            include: {
-              members: {
-                where: {
-                  userId: req.user.id
-                }
-              }
-            }
-          },
-          user: true
-        }
-      });
+      const member = await MemberService.getSingle(memberId);
       
       if (!member) {
         res.status(404).json({
@@ -182,7 +140,7 @@ class MemberController {
       }
 
       // Check if the authenticated user is an admin of the community
-      const isAdmin = member.community.members.some(m => m.role === 'Community Admin');
+      const isAdmin = await MemberService.checkCommunityAdmin(req.user.id, member.communityId);
       if (!isAdmin) {
         res.status(403).json({
           status: false,
@@ -195,12 +153,16 @@ class MemberController {
       }
 
       // Delete member
-      await prisma.member.delete({
-        where: { id: memberId }
-      });
+      await MemberService.delete(memberId);
 
       res.json({
-        status: true
+        status: true,
+        content: {
+          data: {
+            id: memberId.toString(),
+            message: 'Member removed successfully'
+          }
+        }
       });
     } catch (error) {
       next(error);

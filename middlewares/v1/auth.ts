@@ -4,12 +4,7 @@ import prisma from '@loaders/v1/prisma';
 import { RequestHandler } from 'express';
 import Logger from '@universe/v1/libraries/logger';
 import Env from '@loaders/v1/Env';
-
-
-interface AuthenticatedRequest extends Request {
-  user?: any;
-  token?: string;
-}
+import { AuthenticatedRequest } from '@interfaces/v1/common';
 
 export const auth: RequestHandler = async (req, res, next) => {
   try {

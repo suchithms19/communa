@@ -4,6 +4,7 @@ import apiRoutes from '@api/v1';
 import FrameworkLoader from '@loaders/v1/framework';
 import Logger from '@universe/v1/libraries/logger';
 import Env from '@loaders/v1/Env';
+import Database from '@loaders/v1/database';
 
 const server = async(): Promise<express.Application> =>{
     const app = express();
@@ -12,6 +13,7 @@ const server = async(): Promise<express.Application> =>{
     Env.Loader();
     Logger.Loader();
     FrameworkLoader(app);
+    await Database.Loader();
 
     // Initialize roles
     initializeRoles();

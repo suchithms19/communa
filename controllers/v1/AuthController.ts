@@ -1,32 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
-import prisma from '@loaders/v1/prisma';
-import Env from '@loaders/v1/Env';
-
-interface User {
-  id: number;
-  name: string | null;
-  email: string;
-  password: string;
-  createdAt: Date;
-}
-
-interface AuthenticatedRequest extends Request {
-  user?: User;
-}
-
-// Generate JWT token
-const generateToken = (user: User): string => {
-  const secret = Env.variable.JWT_SECRET || 'your-secret-key';
-  const expiresIn = Env.variable.JWT_EXPIRY || '1d';
-  
-  return jwt.sign(
-    { id: user.id },
-    secret as jwt.Secret,
-    { expiresIn: expiresIn as jwt.SignOptions['expiresIn'] }
-  );
-};
+import AuthService from '@services/v1/AuthService';
+import { AuthenticatedRequest } from '@interfaces/v1/common';
+import { IUser } from '@interfaces/v1/user';
 
 class AuthController {
   static async signup(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -34,9 +9,7 @@ class AuthController {
       const { name, email, password } = req.body;
 
       // Check if user already exists
-      const existingUser = await prisma.user.findUnique({
-        where: { email }
-      });
+      const existingUser = await AuthService.findUserByEmail(email);
       if (existingUser) {
         res.status(400).json({
           status: false,
@@ -49,19 +22,11 @@ class AuthController {
         return;
       }
 
-      // Hash password
-      const hashedPassword = await bcrypt.hash(password, 10);
-
       // Create new user
-      const user = await prisma.user.create({
-        data: {
-          name,
-          email,
-          password: hashedPassword
-        }
-      });
+      const user = await AuthService.createUser({ name, email, password });
 
-      const token = generateToken(user);
+      // Generate token
+      const token = AuthService.generateToken(user as IUser);
 
       res.status(200).json({
         status: true,
@@ -87,9 +52,7 @@ class AuthController {
       const { email, password } = req.body;
 
       // Find user
-      const user = await prisma.user.findUnique({
-        where: { email }
-      });
+      const user = await AuthService.findUserByEmail(email);
       if (!user) {
         res.status(400).json({
           status: false,
@@ -103,7 +66,7 @@ class AuthController {
       }
 
       // Check password
-      const isMatch = await bcrypt.compare(password, user.password);
+      const isMatch = await AuthService.verifyPassword(password, user.password);
       if (!isMatch) {
         res.status(400).json({
           status: false,
@@ -116,7 +79,7 @@ class AuthController {
         return;
       }
 
-      const token = generateToken(user);
+      const token = AuthService.generateToken(user as IUser);
 
       res.json({
         status: true,
