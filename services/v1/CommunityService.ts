@@ -1,7 +1,5 @@
 import { ICommunity } from "@interfaces/v1/community";
 import prisma from "@loaders/v1/prisma";
-import { CommunityColumn } from "@schema/v1/CommunityColumn";
-import collections from "@schema/v1/meta";
 
 // Function to generate slug from name
 const generateSlug = (name: string): string => {
@@ -189,6 +187,59 @@ class CommunityService {
     return prisma.community.delete({
       where: { id }
     });
+  }
+
+  static async getCommunityMembers(communityId: number, page: number = 1, limit: number = 10) {
+    const skip = (page - 1) * limit;
+    
+    // First get all member data 
+    const [members, total] = await Promise.all([
+      prisma.member.findMany({
+        where: {
+          communityId
+        },
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true
+            }
+          }
+        },
+        orderBy: { createdAt: 'asc' },
+        skip,
+        take: limit
+      }),
+      prisma.member.count({
+        where: {
+          communityId
+        }
+      })
+    ]);
+
+    // Fetch roles based on role names
+    const roleNames = [...new Set(members.map(member => member.role))];
+    const roles = await prisma.role.findMany({
+      where: {
+        name: {
+          in: roleNames
+        }
+      }
+    });
+
+    // Create a map for quick role lookup
+    const roleMap = roles.reduce((map, role) => {
+      map[role.name] = role;
+      return map;
+    }, {} as Record<string, any>);
+
+    return {
+      members,
+      roles: roleMap,
+      total,
+      pages: Math.ceil(total / limit),
+      page
+    };
   }
 }
 

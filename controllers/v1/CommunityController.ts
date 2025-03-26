@@ -145,6 +145,55 @@ class CommunityController {
       next(error);
     }
   }
+
+  static async getCommunityMembers(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const communityId = parseInt(req.params.id);
+      
+      if (isNaN(communityId)) {
+        res.status(400).json({
+          status: false,
+          errors: [{ message: 'Invalid community ID' }]
+        });
+        return;
+      }
+
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 10;
+
+      const result = await CommunityService.getCommunityMembers(communityId, page, limit);
+
+      res.json({
+        status: true,
+        content: {
+          meta: {
+            total: result.total,
+            pages: result.pages,
+            page
+          },
+          data: result.members.map(member => {
+            const roleInfo = result.roles[member.role] || { id: null, name: member.role };
+            
+            return {
+              id: member.id.toString(),
+              community: member.communityId.toString(),
+              user: {
+                id: member.user.id.toString(),
+                name: member.user.name
+              },
+              role: {
+                id: roleInfo.id ? roleInfo.id.toString() : '',
+                name: roleInfo.name
+              },
+              created_at: member.createdAt
+            };
+          })
+        }
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default CommunityController; 

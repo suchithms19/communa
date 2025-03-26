@@ -1,4 +1,3 @@
-import { Request } from 'express';
 import jwt from 'jsonwebtoken';
 import prisma from '@loaders/v1/prisma';
 import { RequestHandler } from 'express';

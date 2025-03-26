@@ -1,7 +1,5 @@
 import { IMember } from "@interfaces/v1/member";
 import prisma from "@loaders/v1/prisma";
-import { MemberColumn } from "@schema/v1/MemberColumn";
-import collections from "@schema/v1/meta";
 
 class MemberService {
   static async getAll(page: number = 1, limit: number = 10) {

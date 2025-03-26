@@ -21,5 +21,6 @@ CommunityRouter.post('/', auth, validate(createCommunitySchema), CommunityContro
 CommunityRouter.get('/', CommunityController.getAllCommunities);
 CommunityRouter.get('/me/owner', auth, CommunityController.getMyCommunities);
 CommunityRouter.get('/me/member', auth, CommunityController.getMyMemberships);
+CommunityRouter.get('/:id/members', CommunityController.getCommunityMembers);
 
 export default CommunityRouter; 

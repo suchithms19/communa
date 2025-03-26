@@ -1,7 +1,5 @@
 import { IRole } from "@interfaces/v1/role";
 import prisma from "@loaders/v1/prisma";
-import { RoleColumn } from "@schema/v1/RoleColumn";
-import collections from "@schema/v1/meta";
 
 class RoleService {
   static async getAll(page: number = 1, limit: number = 10) {
