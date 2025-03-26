@@ -1,4 +1,4 @@
-import prisma from '../../src/config/prisma';
+import prisma from './prisma';
 import Logger from '../../universe/v1/libraries/logger';
 
 interface RoleType {

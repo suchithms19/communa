@@ -1,16 +1,15 @@
 import express from 'express';
 import { initializeRoles } from "./loaders/v1/roles";
-import authRoutes from './src/routes/auth';
-import communityRoutes from './src/routes/community';
-import memberRoutes from './src/routes/member';
-import roleRoutes from './src/routes/role';
+import apiRoutes from './api/v1';
 import FrameworkLoader from './loaders/v1/framework';
 import Logger from './universe/v1/libraries/logger';
+import Env from './loaders/v1/Env';
 
 const server = async(): Promise<express.Application> =>{
     const app = express();
 
     // Middleware
+    Env.Loader();
     Logger.Loader();
     FrameworkLoader(app);
 
@@ -18,10 +17,7 @@ const server = async(): Promise<express.Application> =>{
     initializeRoles();
 
     // Routes
-    app.use('/v1/auth', authRoutes);
-    app.use('/v1/community', communityRoutes);
-    app.use('/v1/member', memberRoutes);
-    app.use('/v1/role', roleRoutes);
+    app.use('/v1', apiRoutes);
 
     return app;
 }

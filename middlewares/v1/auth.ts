@@ -1,8 +1,9 @@
 import { Request } from 'express';
 import jwt from 'jsonwebtoken';
-import prisma from '../src/config/prisma';
+import prisma from '../../loaders/v1/prisma';
 import { RequestHandler } from 'express';
-import Logger from '../universe/v1/libraries/logger';
+import Logger from '../../universe/v1/libraries/logger';
+import Env from '../../loaders/v1/Env';
 
 
 interface AuthenticatedRequest extends Request {
@@ -23,7 +24,7 @@ export const auth: RequestHandler = async (req, res, next) => {
     }
 
     const token = authHeader.replace('Bearer ', '');
-    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { id: string };
+    const decoded = jwt.verify(token, Env.variable.JWT_SECRET as string) as { id: string };
 
     const user = await prisma.user.findUnique({
       where: { id: parseInt(decoded.id, 10) }
