@@ -1,8 +1,8 @@
 import express, { Router, Request, Response, NextFunction } from 'express';
 import Joi from 'joi';
 import prisma from '../config/prisma';
-import auth from '../middlewares/auth';
-import validate from '../middlewares/validate';
+import auth from '../../middlewares/auth';
+import validate from '../../middlewares/validate';
 
 const router: Router = express.Router();
 

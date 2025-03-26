@@ -3,8 +3,8 @@ import Joi from 'joi';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import prisma from '../config/prisma';
-import validate from '../middlewares/validate';
-import auth from '../middlewares/auth';
+import validate from '../../middlewares/validate';
+import auth from '../../middlewares/auth';
 
 const router: Router = express.Router();
 
