@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import Logger from '../../universe/v1/libraries/logger';
 
 class Database {
   static instance: PrismaClient;
@@ -8,9 +9,9 @@ class Database {
       const client = new PrismaClient();
       await client.$connect();
       Database.instance = client;
-      console.log('Database connected successfully');
+      Logger.instance.info('Database connected successfully');
     } catch (error) {
-      console.error('Database connection failed:', error);
+      Logger.instance.error('Database connection failed:', error);
       process.exit(1);
     }
   }

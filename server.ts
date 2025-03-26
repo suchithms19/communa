@@ -5,11 +5,13 @@ import communityRoutes from './src/routes/community';
 import memberRoutes from './src/routes/member';
 import roleRoutes from './src/routes/role';
 import FrameworkLoader from './loaders/v1/framework';
+import Logger from './universe/v1/libraries/logger';
 
 const server = async(): Promise<express.Application> =>{
     const app = express();
 
     // Middleware
+    Logger.Loader();
     FrameworkLoader(app);
 
     // Initialize roles

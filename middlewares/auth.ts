@@ -2,6 +2,7 @@ import { Request } from 'express';
 import jwt from 'jsonwebtoken';
 import prisma from '../src/config/prisma';
 import { RequestHandler } from 'express';
+import Logger from '../universe/v1/libraries/logger';
 
 
 interface AuthenticatedRequest extends Request {
@@ -39,7 +40,7 @@ export const auth: RequestHandler = async (req, res, next) => {
     (req as AuthenticatedRequest).user = user;
     next(); 
   } catch (error) {
-    console.error('Auth Middleware Error:', error);
+    Logger.instance.error('Auth Middleware Error:', error);
     res.status(400).json({
       status: false,
       errors: [{ message: 'Invalid token or session expired.', code: 'NOT_SIGNEDIN' }],

@@ -1,4 +1,5 @@
 import prisma from '../../src/config/prisma';
+import Logger from '../../universe/v1/libraries/logger';
 
 interface RoleType {
   name: string;
@@ -22,9 +23,9 @@ const initializeRoles = async (): Promise<void> => {
         });
       }
     }
-    console.log('Roles initialization completed');
+    Logger.instance.info('Roles initialization completed');
   } catch (error) {
-    console.error('Error initializing roles:', error);
+    Logger.instance.error('Error initializing roles:', error);
   }
 };
 
