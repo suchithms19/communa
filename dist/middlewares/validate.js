@@ -5,7 +5,7 @@ const validate = (schema) => {
         const { error } = schema.validate(req.body, { abortEarly: false });
         if (error) {
             const errors = error.details.map(detail => {
-                const param = detail.path[0]; // Extract field name
+                const param = detail.path[0];
                 return {
                     param,
                     message: detail.message.replace(/['"]/g, ''),

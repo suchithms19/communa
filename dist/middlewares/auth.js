@@ -23,7 +23,7 @@ const auth = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () 
                 status: false,
                 errors: [{ message: 'You need to sign in to proceed.', code: 'NOT_SIGNEDIN' }],
             });
-            return; // 🚀 Important: Ensures function exits early
+            return;
         }
         const token = authHeader.replace('Bearer ', '');
         const decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
@@ -35,10 +35,10 @@ const auth = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () 
                 status: false,
                 errors: [{ message: 'You need to sign in to proceed.', code: 'NOT_SIGNEDIN' }],
             });
-            return; // 🚀 Ensures function exits early
+            return;
         }
         req.user = user;
-        next(); // ✅ Moves to next middleware
+        next();
     }
     catch (error) {
         console.error('Auth Middleware Error:', error);
@@ -46,7 +46,7 @@ const auth = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () 
             status: false,
             errors: [{ message: 'Invalid token or session expired.', code: 'NOT_SIGNEDIN' }],
         });
-        return; // 🚀 Ensure function exits properly
+        return;
     }
 });
 exports.auth = auth;

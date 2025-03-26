@@ -4,7 +4,8 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
-    "dev": "nodemon src/index.js"
+    "dev": "nodemon src/index.js",
+    "start-env":"NODE_ENV=$BUILD_ENV env-cmd -f config/.env.$BUILD_ENV nodemon dist/index.js"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +18,7 @@
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
+    "env-cmd": "^10.1.0",
     "express": "^4.21.2",
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
