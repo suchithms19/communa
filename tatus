@@ -1,0 +1,13 @@
+[33mcommit 8194a5237828813c498cb7470504a23a11137319[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmigrate-to-typescript-prisma[m[33m)[m
+Author: suchithms19 <mssuchith2@gmail.com>
+Date:   Wed Mar 26 16:22:22 2025 +0530
+
+    loaders and middlwares are structured
+
+M	.gitignore
+M	config/.env.development
+M	config/.env.production
+M	config/.env.test
+D	dist/index.js
+D	dist/middlewares/auth.js
+D	dist/middlewares/validate.js
